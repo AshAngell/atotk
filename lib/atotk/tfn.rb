@@ -1,6 +1,6 @@
 module AtoTk
   class Tfn
-    includes AtoTk::Base
+    include AtoTk::Common
 
     def initialize(val)
       @value = val
@@ -12,6 +12,8 @@ module AtoTk
       return false if (@digits.size < 8 || @digits.size > 9)
       @digits.map.with_index {|digit, index| digit * WEIGHTS[@digits.size][index]}.inject {|sum, digit| sum + digit} % 11 == 0
     end
+
+    alias_method :is_valid?, :valid?
 
     def to_s
       if valid?
