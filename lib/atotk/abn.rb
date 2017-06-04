@@ -26,21 +26,17 @@ module AtoTk
     def lookup(authentication_guid)
       if valid?
         soap_client = SOAP::WSDLDriverFactory.new(@wsdl).create_rpc_driver
-        options = {:searchString => @value, :includeHistoricalDetails => 'n', authenticationGuid: authentication_guid}
+        options = {:searchString => @value.to_s, :includeHistoricalDetails => 'n', authenticationGuid: authentication_guid}
         result = soap_client.ABRSearchByABN(options)
         {
             status: result['ABRPayloadSearchResults']['response']['businessEntity']['entityStatus']['entityStatusCode'],
             asic_number: result['ABRPayloadSearchResults']['response']['businessEntity']['ASICNumber'],
-            name: {
-                entity: result['ABRPayloadSearchResults']['response']['businessEntity']['mainName']['organisationName'],
-                trading: result['ABRPayloadSearchResults']['response']['businessEntity']['mainTradingName']['organisationName']
-            },
+            name:  result['ABRPayloadSearchResults']['response']['businessEntity']['mainName']['organisationName'],
             type: result['ABRPayloadSearchResults']['response']['businessEntity']['entityType']['entityDescription'],
             state: result['ABRPayloadSearchResults']['response']['businessEntity']['mainBusinessPhysicalAddress']['stateCode'],
             postcode: result['ABRPayloadSearchResults']['response']['businessEntity']['mainBusinessPhysicalAddress']['postcode']
         }
       end
     end
-
   end
 end
